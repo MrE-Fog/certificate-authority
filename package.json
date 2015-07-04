@@ -2,7 +2,7 @@
   "name": "certificate-authority",
   "version": "0.0.1",
   "description": "Certificate Authority using OpenSSL",
-  "main": "build/src/index.js",
+  "main": "build/src/CertificateAuthority.js",
   "scripts": {
     "test": "gulp test"
   },
