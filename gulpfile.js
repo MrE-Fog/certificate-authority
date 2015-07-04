@@ -22,6 +22,5 @@ gulp.task('build:test', function () {
 
 gulp.task('test', ['build:test'], function () {
 	return gulp.src('build/test/**/*.js')
-		.pipe(mocha())
-		.once('error', function () { process.exit(1); });
+		.pipe(mocha());
 });
