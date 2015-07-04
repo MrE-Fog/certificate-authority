@@ -1,0 +1,34 @@
+{
+  "name": "certificate-authority",
+  "version": "0.0.1",
+  "description": "Certificate Authority using OpenSSL",
+  "main": "build/src/index.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Volcomix/certificate-authority.git"
+  },
+  "keywords": [
+    "certificate",
+    "authority",
+    "openssl"
+  ],
+  "author": "Volcomix",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Volcomix/certificate-authority/issues"
+  },
+  "homepage": "https://github.com/Volcomix/certificate-authority#readme",
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "q": "^1.4.1"
+  },
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "gulp": "^3.9.0",
+    "gulp-mocha": "^2.1.2",
+    "gulp-typescript": "^2.7.8"
+  }
+}
