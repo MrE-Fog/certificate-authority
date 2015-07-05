@@ -10,12 +10,32 @@ var minimatch = require('minimatch');
 
 var tsProject = tsc.createProject('tsconfig.json');
 
+function ambientModule(moduleName) {
+	return through2.obj(function (chunk, enc, callback) {
+		if (!minimatch(chunk.relative, 'test/**')) {
+			chunk.contents = new Buffer(
+				chunk.contents.toString()
+					.replace(/declare /g, '')
+					.replace(/(.*)/g, '    $1')
+					.replace(
+					/^\s*\/\/\/\s*<reference[^>]*\/>/,
+					'declare module "' + moduleName + '" {\n')
+				+ "\n}");
+
+			this.push(chunk);
+		}
+		callback();
+	});
+}
+
 gulp.task('build:js', function () {
 	var tscResult = gulp.src(['src/**/*.ts', '!src/test/**']).pipe(tsc(tsProject));
 
 	return merge([
 		tscResult.js.pipe(gulp.dest('release')),
-		tscResult.dts.pipe(gulp.dest('release/definitions'))
+		tscResult.dts
+			.pipe(ambientModule('certificate-authority'))
+			.pipe(gulp.dest('release/definitions'))
 	]);
 });
 
@@ -36,12 +56,9 @@ gulp.task('build', ['clean'], function () {
 
 	return merge([
 		tscResult.js.pipe(gulp.dest('release')),
-		tscResult.dts.pipe(through2.obj(function (chunk, enc, callback) {
-			if (!minimatch(chunk.relative, 'test/**')) {
-				this.push(chunk);
-			}
-			callback();
-		})).pipe(gulp.dest('release/definitions'))
+		tscResult.dts
+			.pipe(ambientModule('certificate-authority'))
+			.pipe(gulp.dest('release/definitions'))
 	]);
 });
 
