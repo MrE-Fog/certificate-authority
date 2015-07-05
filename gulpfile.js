@@ -1,26 +1,51 @@
-/// <reference path="typings/gulp/gulp.d.ts"/>
-/// <reference path="typings/gulp-typescript/gulp-typescript.d.ts"/>
-/// <reference path="typings/gulp-mocha/gulp-mocha.d.ts" />
+/// <reference path="typings/tsd.d.ts" />
 
 var gulp = require('gulp');
 var tsc = require('gulp-typescript');
 var mocha = require('gulp-mocha');
+var merge = require('merge2');
+var del = require('del');
+var through2 = require('through2');
+var minimatch = require('minimatch');
 
 var tsProject = tsc.createProject('tsconfig.json');
 
-gulp.task('build', function () {
-	return gulp.src('src/**/*.ts')
-		.pipe(tsc(tsProject))
-		.pipe(gulp.dest('build/src'));
+gulp.task('build:js', function () {
+	var tscResult = gulp.src(['src/**/*.ts', '!src/test/**']).pipe(tsc(tsProject));
+
+	return merge([
+		tscResult.js.pipe(gulp.dest('release')),
+		tscResult.dts.pipe(gulp.dest('release/definitions'))
+	]);
 });
 
 gulp.task('build:test', function () {
-	return gulp.src(['src/**/*.ts', 'test/**/*.ts'], { base: '.' })
-		.pipe(tsc(tsProject))
-		.pipe(gulp.dest('build'));
+	return gulp.src('src/test/**/*.ts')
+		.pipe(tsc({
+		target: 'ES5',
+		module: 'commonjs'
+	})).js.pipe(gulp.dest('release/test'));
 });
 
-gulp.task('test', ['build:test'], function () {
-	return gulp.src('build/test/**/*.js')
+gulp.task('clean', function (cb) {
+	del('release', cb);
+});
+
+gulp.task('build', ['clean'], function () {
+	var tscResult = gulp.src('src/**/*.ts').pipe(tsc(tsProject));
+
+	return merge([
+		tscResult.js.pipe(gulp.dest('release')),
+		tscResult.dts.pipe(through2.obj(function (chunk, enc, callback) {
+			if (!minimatch(chunk.relative, 'test/**')) {
+				this.push(chunk);
+			}
+			callback();
+		})).pipe(gulp.dest('release/definitions'))
+	]);
+});
+
+gulp.task('test', ['build'], function () {
+	return gulp.src('release/test/**/*.js')
 		.pipe(mocha());
 });

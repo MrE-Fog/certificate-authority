@@ -1,6 +1,4 @@
-/// <reference path="../typings/node/node.d.ts"/>
-/// <reference path="../typings/mkdirp/mkdirp.d.ts"/>
-/// <reference path="../typings/q/Q.d.ts"/>
+/// <reference path="../typings/tsd.d.ts"/>
 
 import childProcess = require('child_process');
 import util = require('util');

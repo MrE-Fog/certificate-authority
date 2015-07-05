@@ -1,14 +1,11 @@
-/// <reference path="../typings/node/node.d.ts"/>
-/// <reference path="../typings/mocha/mocha.d.ts"/>
-/// <reference path="../typings/chai/chai.d.ts"/>
-/// <reference path="../typings/q/Q.d.ts"/>
+/// <reference path="../../typings/tsd.d.ts"/>
 
 import fs = require('fs');
 
 require('chai').should();
 import Q = require('q');
 
-import CA = require('../src/CertificateAuthority');
+import CA = require('../CertificateAuthority');
 
 describe('CertificateAuthority', function() {
 	var ca: CA;
@@ -52,9 +49,9 @@ describe('CertificateAuthority', function() {
 				return Q.all([ca.caCertificate, newCA.caCertificate])
 					.spread(function(caCert: CA.CACertificate, newCACert: CA.CACertificate) {
 
-					newCACert.privateKey.should.be.equal(caCert.privateKey);
-					newCACert.certificate.should.be.equal(caCert.certificate);
-				});
+						newCACert.privateKey.should.be.equal(caCert.privateKey);
+						newCACert.certificate.should.be.equal(caCert.certificate);
+					});
 			});
 		});
 	});
@@ -70,12 +67,12 @@ describe('CertificateAuthority', function() {
 				return ca.sign('*.test1.com', 'DNS: *.test1.com, DNS: test1.com')
 					.then(function(certificate) {
 
-					certificate.indexOf('-----BEGIN CERTIFICATE-----')
-						.should.be.equal(0);
+						certificate.indexOf('-----BEGIN CERTIFICATE-----')
+							.should.be.equal(0);
 
-					certificate.indexOf('-----END CERTIFICATE-----')
-						.should.be.above(0);
-				});
+						certificate.indexOf('-----END CERTIFICATE-----')
+							.should.be.above(0);
+					});
 			});
 			it('should write random state', function() {
 				return Q.nfcall(fs.stat, 'ssl/.rnd');
@@ -84,9 +81,9 @@ describe('CertificateAuthority', function() {
 				return Q.nfcall<Buffer>(fs.readFile, 'keys/TestCA-CA-cert.srl')
 					.then(function(data) {
 
-					serial = '' + data;
-					serial.should.be.a('string').with.length.above(0);
-				});
+						serial = '' + data;
+						serial.should.be.a('string').with.length.above(0);
+					});
 			});
 		});
 		context('when 2nd certificate', function() {
@@ -94,21 +91,21 @@ describe('CertificateAuthority', function() {
 				return ca.sign('*.test2.com', 'DNS: *.test2.com, DNS: test2.com')
 					.then(function(certificate) {
 
-					certificate.indexOf('-----BEGIN CERTIFICATE-----')
-						.should.be.equal(0);
+						certificate.indexOf('-----BEGIN CERTIFICATE-----')
+							.should.be.equal(0);
 
-					certificate.indexOf('-----END CERTIFICATE-----')
-						.should.be.above(0);
-				});
+						certificate.indexOf('-----END CERTIFICATE-----')
+							.should.be.above(0);
+					});
 			});
 			it('should generate a new CA serial number', function() {
 				return Q.nfcall<Buffer>(fs.readFile, 'keys/TestCA-CA-cert.srl')
 					.then(function(data) {
 
-					var newSerial = '' + data;
-					newSerial.should.be.a('string').not.equal(serial);
-					serial = newSerial;
-				});
+						var newSerial = '' + data;
+						newSerial.should.be.a('string').not.equal(serial);
+						serial = newSerial;
+					});
 			});
 		});
 		context('when no subject alt name specified', function() {
@@ -126,9 +123,9 @@ describe('CertificateAuthority', function() {
 				return Q.nfcall<Buffer>(fs.readFile, 'keys/TestCA-CA-cert.srl')
 					.then(function(data) {
 
-					var newSerial = '' + data;
-					newSerial.should.be.a('string').not.equal(serial);
-				});
+						var newSerial = '' + data;
+						newSerial.should.be.a('string').not.equal(serial);
+					});
 			});
 		});
 	});
