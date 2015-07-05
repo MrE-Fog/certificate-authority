@@ -2,6 +2,7 @@
 
 import childProcess = require('child_process');
 import util = require('util');
+import path = require('path');
 import fs = require('fs');
 
 import mkdirp = require('mkdirp');
@@ -9,8 +10,8 @@ import Q = require('q');
 
 class CertificateAuthority {
 
-    private static configFile = 'ssl/openssl.cnf';
-    private static randFile = 'ssl/.rnd';
+    private static configFile = path.resolve(__dirname, '../ssl/openssl.cnf');
+    private static randFile = path.resolve(__dirname, '../ssl/.rnd');
     private static keyDir = 'keys/';
 
     private get keyFile(): string {

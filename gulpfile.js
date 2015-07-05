@@ -28,6 +28,10 @@ function ambientModule(moduleName) {
 	});
 }
 
+gulp.task('clean', function (cb) {
+	del('release', cb);
+});
+
 gulp.task('build:js', function () {
 	var tscResult = gulp.src(['src/**/*.ts', '!src/test/**']).pipe(tsc(tsProject));
 
@@ -40,15 +44,10 @@ gulp.task('build:js', function () {
 });
 
 gulp.task('build:test', function () {
-	return gulp.src('src/test/**/*.ts')
-		.pipe(tsc({
+	return gulp.src('src/test/**/*.ts').pipe(tsc({
 		target: 'ES5',
 		module: 'commonjs'
 	})).js.pipe(gulp.dest('release/test'));
-});
-
-gulp.task('clean', function (cb) {
-	del('release', cb);
 });
 
 gulp.task('build', ['clean'], function () {

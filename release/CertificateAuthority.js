@@ -1,6 +1,7 @@
 /// <reference path="../typings/tsd.d.ts"/>
 var childProcess = require('child_process');
 var util = require('util');
+var path = require('path');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var Q = require('q');
@@ -142,8 +143,8 @@ var CertificateAuthority = (function () {
             return _this._sign(commonName, subjectAltName);
         });
     };
-    CertificateAuthority.configFile = 'ssl/openssl.cnf';
-    CertificateAuthority.randFile = 'ssl/.rnd';
+    CertificateAuthority.configFile = path.resolve(__dirname, '../ssl/openssl.cnf');
+    CertificateAuthority.randFile = path.resolve(__dirname, '../ssl/.rnd');
     CertificateAuthority.keyDir = 'keys/';
     return CertificateAuthority;
 })();
