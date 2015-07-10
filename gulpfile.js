@@ -2,10 +2,10 @@
 
 var gulp = require('gulp');
 var tsc = require('gulp-typescript');
+var ambientTypescript = require('gulp-ambient-typescript');
 var mocha = require('gulp-mocha');
 var merge = require('merge2');
 var del = require('del');
-var ambientTypescript = require('gulp-ambient-typescript');
 
 var tsProject = tsc.createProject('tsconfig.json');
 
