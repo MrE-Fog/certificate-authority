@@ -5,28 +5,9 @@ var tsc = require('gulp-typescript');
 var mocha = require('gulp-mocha');
 var merge = require('merge2');
 var del = require('del');
-var through2 = require('through2');
-var minimatch = require('minimatch');
+var ambientTypescript = require('gulp-ambient-typescript');
 
 var tsProject = tsc.createProject('tsconfig.json');
-
-function ambientModule(moduleName) {
-	return through2.obj(function (chunk, enc, callback) {
-		if (!minimatch(chunk.relative, 'test/**')) {
-			chunk.contents = new Buffer(
-				chunk.contents.toString()
-					.replace(/declare /g, '')
-					.replace(/(.*)/g, '    $1')
-					.replace(
-					/^\s*\/\/\/\s*<reference[^>]*\/>/,
-					'declare module "' + moduleName + '" {\n')
-				+ "\n}");
-
-			this.push(chunk);
-		}
-		callback();
-	});
-}
 
 gulp.task('clean', function (cb) {
 	del('release', cb);
@@ -38,7 +19,7 @@ gulp.task('build:js', function () {
 	return merge([
 		tscResult.js.pipe(gulp.dest('release')),
 		tscResult.dts
-			.pipe(ambientModule('certificate-authority'))
+			.pipe(ambientTypescript('CertificateAuthority.d.ts', 'certificate-authority'))
 			.pipe(gulp.dest('release/definitions'))
 	]);
 });
@@ -56,7 +37,7 @@ gulp.task('build', ['clean'], function () {
 	return merge([
 		tscResult.js.pipe(gulp.dest('release')),
 		tscResult.dts
-			.pipe(ambientModule('certificate-authority'))
+			.pipe(ambientTypescript('CertificateAuthority.d.ts', 'certificate-authority'))
 			.pipe(gulp.dest('release/definitions'))
 	]);
 });
